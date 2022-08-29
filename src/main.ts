@@ -90,7 +90,11 @@ async function run(): Promise<void> {
 
         await exec.exec(
           'go',
-          args.concat('-o', `./.test/${osPlatform}-${osArch}/${binary}`, pkg),
+          args.concat(
+            '-o',
+            `./.test/${osPlatform}-${osArch}/${binary}.test`,
+            pkg
+          ),
           {
             env
           }

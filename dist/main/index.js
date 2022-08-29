@@ -14692,7 +14692,7 @@ async function run() {
                 env['GOOS'] = osPlatform;
                 env['GOARCH'] = osArch;
                 core.info(`Compiling ${pkg} to ${binary}`);
-                await exec.exec('go', args.concat('-o', `./.test/${osPlatform}-${osArch}/${binary}`, pkg), {
+                await exec.exec('go', args.concat('-o', `./.test/${osPlatform}-${osArch}/${binary}.test`, pkg), {
                     env
                 });
             }
