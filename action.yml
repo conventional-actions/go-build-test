@@ -1,0 +1,20 @@
+name: 'go-build-test'
+description: 'Build Go test binaries'
+author: 'Conventional Actions'
+inputs:
+  package:
+    required: false
+    description: 'package to build'
+    default: ./test/smoketest
+  platforms:
+    required: false
+    description: 'comma-separated list of platforms to build'
+  tags:
+    required: false
+    description: 'comma-separated list of build tags to pass to go compiler'
+runs:
+  using: 'node16'
+  main: 'dist/main/index.js'
+branding:
+  icon: target
+  color: purple
