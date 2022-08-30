@@ -1,70 +1,29 @@
+import path from 'path'
+import fs from 'fs'
 import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import * as exec from '@actions/exec'
 import * as artifact from '@actions/artifact'
-import {parseInputFiles} from './utils'
-import path from 'path'
-import os from 'os'
-import fs from 'fs'
-
-function getDefaultPlatformArch(): string {
-  let osPlatform: string = os.platform()
-  switch (osPlatform) {
-    case 'win32':
-      osPlatform = 'windows'
-      break
-
-    case 'sunos':
-      osPlatform = 'solaris'
-      break
-  }
-  core.debug(`osPlatform = ${osPlatform}`)
-
-  let osArch: string = os.arch()
-  if (osArch === 'x64') {
-    osArch = 'amd64'
-  }
-  core.debug(`osArch = ${osArch}`)
-
-  return `${osPlatform}/${osArch}`
-}
+import {getConfig} from './config'
 
 async function run(): Promise<void> {
   try {
-    const packages = parseInputFiles(
-      core.getInput('package') || './test/smoketest'
-    )
-    core.debug(`packages = ${packages}`)
-
-    const pathsGlobber = await glob.create(packages.join('\n'), {
-      matchDirectories: true,
-      implicitDescendants: false
-    })
-    const paths = await pathsGlobber.glob()
-    core.debug(`paths = ${paths}`)
-
-    const platforms = parseInputFiles(
-      core.getInput('platforms') || getDefaultPlatformArch()
-    )
-    core.debug(`platforms = ${platforms}`)
-
-    const tags = parseInputFiles(core.getInput('tags') || '')
-    core.debug(`tags = ${tags}`)
+    const config = await getConfig()
 
     let args = ['test', '-c']
 
-    if (tags && tags.length) {
-      args = args.concat('-tags', tags.join(','))
+    if (config.tags && config.tags.length) {
+      args = args.concat('-tags', config.tags.join(','))
     }
 
     core.debug(`args = ${args}`)
 
-    for (const platform of platforms) {
+    for (const platform of config.platforms) {
       core.debug(`platform = ${platform}`)
 
       const [osPlatform, osArch] = platform.split('/')
 
-      for (let pkg of paths) {
+      for (let pkg of config.paths) {
         if (path.basename(pkg) === '...') {
           pkg = path.dirname(pkg)
         }
@@ -102,7 +61,7 @@ async function run(): Promise<void> {
       }
     }
 
-    for (const platform of platforms) {
+    for (const platform of config.platforms) {
       core.debug(`platform = ${platform}`)
 
       const [osPlatform, osArch] = platform.split('/')
