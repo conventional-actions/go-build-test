@@ -13,8 +13,8 @@ inputs:
     required: false
     description: 'comma-separated list of build tags to pass to go compiler'
 runs:
-  using: 'node20'
-  main: 'dist/main/index.js'
+  using: 'node24'
+  main: 'dist/index.cjs'
 branding:
   icon: target
   color: purple
