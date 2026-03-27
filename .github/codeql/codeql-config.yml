@@ -1,0 +1,3 @@
+# Exclude bundled action output from CodeQL (vendored deps in dist/).
+paths-ignore:
+  - dist
